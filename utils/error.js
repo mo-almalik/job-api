@@ -1,10 +1,11 @@
-export class AppError extends Error {
-    constructor(message,statusCode){
+export class AppError extends Error{
+    constructor(message ,status){
         super(message)
-        this.message = message
-        this.statusCode = statusCode
+        this.status = status
     }
 }
+
+
 
 
 export const catchError= (fn)=>{

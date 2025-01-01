@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-
+import { slugify } from "transliteration";
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -70,5 +70,24 @@ const userSchema = new mongoose.Schema({
 },{
     timestamps: true
 })
+
+
+userSchema.pre('save', function (next) {
+   
+    if (this.isModified('username') || !this.username) {
+      
+        let baseUsername = slugify(this.name, { separator: "" }); 
+    
+        if (!baseUsername) {
+            baseUsername = "user"; 
+        }
+
+        this.username = baseUsername + Math.floor(Math.random() * 10000);
+    }
+    next();
+});
+
+
+
 
 export const User = mongoose.model('User',userSchema)

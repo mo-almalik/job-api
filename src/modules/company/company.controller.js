@@ -106,6 +106,7 @@ export const getAllCompany= catchError(async (req,res)=>{
 })
 
 // get company by id
+
 export const getCompanyById= catchError(async (req,res)=>{
     const company = await Company.findById(req.params.id).select( '-employeesId')
     if (!company){

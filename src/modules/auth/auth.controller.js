@@ -2,6 +2,7 @@ import { AppError, catchError } from "../../../utils/error.js";
 import { User } from "../../models/user.js";
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken";
+
 export const Register = catchError(async(req,res)=>{
     if(req.body){
         req.body.password = bcrypt.hashSync(req.body.password , +process.env.SALT)

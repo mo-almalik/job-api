@@ -9,7 +9,7 @@ const router = Router()
 
 router.get('/', authentication, getMyAccount);
 router.patch('/update', authentication,upload.single('profileImage'),validate(userUpdateSchema), updateAccount);
-router.delete('remove', authentication,deleteAccount)
+router.delete('/remove', authentication,deleteAccount)
 router.patch('/changePassword', authentication,changePassword);
 
 export default router

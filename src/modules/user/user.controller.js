@@ -1,6 +1,7 @@
-import { catchError, AppError } from "../../../utils/error.js"
-import { User } from "../../models/user.js"
 import fs from "fs"
+import bcrypt from "bcrypt"
+import { User } from "../../models/user.js"
+import { catchError, AppError } from "../../../utils/error.js"
 
 // get my account 
 export const getMyAccount = catchError(async (req, res) => {
@@ -50,9 +51,9 @@ export const updateAccount = catchError(async (req, res) => {
 
 // delete account
 // TODO: remove this cv is exist 
-export const deleteAccount = catchError(async(req,res,next)=>{
+export const deleteAccount = catchError(async(req,res)=>{
     const user = await User.findByIdAndDelete(req.user.id);
-    if (!user) return next(new AppError("الحساب غير موجود", 404))
+    if (!user) throw new AppError("الحساب غير موجود", 404) 
     if(user.profileImage){
         fs.unlinkSync(user.profileImage)
     }
@@ -62,10 +63,10 @@ export const deleteAccount = catchError(async(req,res,next)=>{
 })
 
 // change password
-export const changePassword = catchError(async(req,res,next)=>{
+export const changePassword = catchError(async(req,res)=>{
     const user = await User.findById(req.user.id);
     const isMatch = bcrypt.compareSync(req.body.oldPassword, user.password);
-    if (!isMatch) return next(new AppError("كلمة المرور السايقة غير صحيحة", 409))
+    if (!isMatch) throw new AppError("كلمة المرور السايقة غير صحيحة", 409)
     user.password = req.body.password
     user.password = bcrypt.hashSync(user.password, +process.env.SALT);
     await user.save();

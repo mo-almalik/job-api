@@ -42,7 +42,35 @@ throw  new AppError('حدث خطأ أثناء إنشاء ملف الشركة' , 
 }
 });
 
+// create update company
+export const updateCompany = catchError(async (req, res) => {
+    const { id } = req.params;
+    const employeesId = req.user.id;
 
+    const chickIsExist = await Company.findById(id);
+    if (!chickIsExist || employeesId !== chickIsExist.employeesId.toString()) {
+        return res.status(400).json({
+            message: "لم يتم العثور على الشركة أو أنك لا تملك صلاحية التعديل",
+        });
+    }
+    if (req.files) {
+        if (req.files.logo) {
+            req.body.logo = handleFileUpdate(chickIsExist.logo, req.files.logo[0]);
+        }
+        if (req.files.cover) {
+            req.body.cover = handleFileUpdate(chickIsExist.cover, req.files.cover[0]);
+        }
+    }
+
+    const update = await Company.findByIdAndUpdate(id, req.body, { new: true });
+
+    res.status(200).json({
+        message: "تم تحديث ملف الشركة بنجاح",
+        data: update,
+    });
+});
+
+// delete company
 export const deleteCompany = catchError(async (req,res)=>{
     const employeesId = req.user.id
     const id = req.params.id
@@ -69,3 +97,50 @@ export const deleteCompany = catchError(async (req,res)=>{
 })
 
 
+// get all company
+export const getAllCompany= catchError(async (req,res)=>{
+    const company = await Company.find().select('-employeesId')
+    res.status(200).json({
+        data: company,
+    })
+})
+
+// get company by id
+export const getCompanyById= catchError(async (req,res)=>{
+    const company = await Company.findById(req.params.id).select( '-employeesId')
+    if (!company){
+        return res.status(404).json({
+            message:"لم يتم العثور علي الشركة"
+        })
+    }
+    res.status(200).json({
+        data: company,
+    })
+})
+
+// get my company
+export const getNyCompany= catchError(async (req,res)=>{
+    const company = await Company.find({ employeesId: req.user.id });
+    if (!company){
+        return res.status(404).json({
+            message:"لم يتم العثور علي الشركة"
+        })
+    }
+    res.status(200).json({
+        data: company,
+    })
+})
+
+
+
+const handleFileUpdate = (currentPath, file) => {
+    try {
+
+        if (currentPath && fs.existsSync(currentPath)) {
+            fs.unlinkSync(currentPath);
+        }
+        return file?.path || null;
+    } catch (err) {
+        throw new Error("خطأ أثناء تحديث الملف.");
+    }
+};

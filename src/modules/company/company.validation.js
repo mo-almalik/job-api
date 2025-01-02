@@ -9,3 +9,14 @@ export const addCompanySchema = Joi.object({
         website: Joi.string().allow(null, ''),
     }).allow(null, {})
 })
+
+export const updateCompanySchema = Joi.object({
+    name: Joi.string(),
+    address: Joi.string(),
+    description: Joi.string(),
+    contactInfo: Joi.object({
+        email: Joi.string().email().allow(null, ''),
+        website: Joi.string().allow(null, ''),
+    }).allow(null, {}),
+    id:Joi.string().hex().length(24).required()
+})

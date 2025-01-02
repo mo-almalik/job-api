@@ -8,13 +8,6 @@ export const createNewCompany = catchError(async (req, res) => {
 
 try{
     req.body.employeesId = req.user.id;
-    // const checkIfAddCompany = await Company.findOne({ employeesId:req.body.employeesId})
-    // if (checkIfAddCompany) {
-    //     return res.status(403).json({
-    //         message :'تم اضافة شركة من قبل '
-    //     })
-    //
-    // }
 
     if (!req.files.logo){
         return res.status(400).json({
@@ -29,14 +22,13 @@ try{
             req.body.cover = req.files.cover[0].path ;
         }
     }
-    console.log(req.files)
+
     await Company.create(req.body);
     res.status(201).json({
         message: 'تم انشاء ملف الشركة بنجاح',
     });
 
 }catch (e) {
-    console.log(e)
     if (req.files) {
         if (req.files.logo && req.files.logo.length > 0) {
             fs.unlinkSync(req.files.logo[0].path);

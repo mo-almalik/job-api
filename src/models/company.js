@@ -4,7 +4,7 @@ const companySchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, "Company name is required"],
-        unique: true
+        // unique: true
     },
     logo: {
         type: String,
@@ -28,13 +28,10 @@ const companySchema = new mongoose.Schema({
     contactInfo :{
        email:{
          type: String,
-         required: [true, "Company email is required"],
-         unique: true,
          match: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
        },
        website:{
          type: String,
-         required: [true, "Company website URL is required"]
        },
     },
 },{

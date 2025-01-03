@@ -23,9 +23,11 @@ export const authentication = (req, res, next) => {
 
 
 // authenticate middleware
-export const authorize = (role) => {
-	return (req, res, next) => {
-		if (role !== req.user.role) throw new AppError('Forbidden', 403)
-		next()
-	}
-}
+export const authorize = (roles) => {
+    return (req, res, next) => {
+        if (!roles.includes(req.user.role)) {
+            throw new AppError('Forbidden', 403);
+        }
+        next();
+    };
+};

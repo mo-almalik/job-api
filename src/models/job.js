@@ -22,7 +22,7 @@ const jobSchema = new mongoose.Schema({
         type: [String],
     },
     companyId: {
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "Company",
         required: [true, "Company is required"]
     },
@@ -35,7 +35,7 @@ const jobSchema = new mongoose.Schema({
         enum:["Full-time", "Part-time", "Contract","Freelance", "Remote","Internship" ]
     },
     employerId:{
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: [true, "Employer is required"]
     },

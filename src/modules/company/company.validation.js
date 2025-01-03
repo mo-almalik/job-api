@@ -1,7 +1,7 @@
 import Joi from "joi";
 
 export const addCompanySchema = Joi.object({
-    name: Joi.string().required(),
+    name: Joi.string().trim().required(),
     address: Joi.string().required(),
     description: Joi.string().required(),
     contactInfo: Joi.object({

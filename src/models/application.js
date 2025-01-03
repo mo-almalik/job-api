@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import mongoosePaginate from "mongoose-paginate-v2";
 const applicationSchema = new mongoose.Schema({
     jobId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -28,5 +28,5 @@ const applicationSchema = new mongoose.Schema({
 },{
     timestamps: true,
 })
-
+applicationSchema.plugin(mongoosePaginate);
 export const Application =  mongoose.model('Application', applicationSchema)

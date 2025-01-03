@@ -52,12 +52,16 @@ const jobSchema = new mongoose.Schema({
         enum: ['open', 'closed', 'expired'],
         default: 'open'
     },
-    view:{
+    views:{
         type: Number,
         default: 0
     }
 },{
     timestamps: true
 })
+jobSchema.methods.incrementViews = function () {
+    this.views += 1;
+    return this.save();
+};
 jobSchema.plugin(mongoosePaginate);
 export default mongoose.model("Job", jobSchema)

@@ -29,26 +29,60 @@ export const createJob = catchError(async (req, res) => {
 })
 
 // get all jobs
-export const getAllJob = catchError(async (req,res)=>{
-    const {  page = 1, limit = 12, location , status } = req.query;
-    let filters = {};
-    //
-    if (location) filters.location = location;
-    if (status) filters.status = status;
+export const getAllJob = catchError(async (req, res) => {
+    const {
+        page = 1,
+        limit = 12,
+        location,
+        status,
+        country,
+        city,
+        jobType,
+        sortBy = "createdAt",
+        order = "desc",
+    } = req.query;
+
+
+    const filters = {};
+
+
+    if (location) {
+        filters["location.city"] = { $regex: location, $options: "i" };
+    }
+
+
+    if (status) {
+        filters.status = status;
+    }
+
+
+    if (country) {
+        filters["location.country"] = { $regex: country, $options: "i" };
+    }
+
+    if (city) {
+        filters["location.city"] = { $regex: city, $options: "i" };
+    }
+
+
+    if (jobType) {
+        filters.jobType = jobType;
+    }
 
     const options = {
-        page: parseInt(page),
-        limit: parseInt(limit),
-        sort: { createdAt: -1 },
-        populate: {path: 'companyId', select: 'name logo' }
-
+        page: parseInt(page, 10),
+        limit: parseInt(limit, 10),
+        sort: { [sortBy]: order === "asc" ? 1 : -1 },
+        populate: { path: "companyId", select: "name logo" },
     };
-    const jobs = await  Job.paginate(filters,options)
-    res.json({
-        data:jobs
-    })
-})
 
+    const jobs = await Job.paginate(filters, options);
+
+    res.status(200).json({
+        success: true,
+        data: jobs,
+    });
+});
 //get job by company id
 export const getJobsByCompanyId = catchError(async (req, res) => {
     const {  page = 1, limit = 12 } = req.query;
@@ -76,6 +110,7 @@ export const getJobById = catchError(async (req,res)=>{
     const job = await Job.findById(id).populate('companyId' ,'name logo cover description address ')
         .select('-employerId')
     if(!job) return res.status(404).json({message : "لم يتم العثور علي الوظيفة"})
+    await job.incrementViews();
     res.json({data:job})
 })
 

@@ -19,14 +19,15 @@ export const createJobSchema = Joi.object({
 })
 
 
+
 export const querySchema = Joi.object({
     page: Joi.number().integer().min(1).default(1),
     limit: Joi.number().integer().min(1).max(100).default(15),
     location: Joi.string().trim().min(2).max(100),
+    country: Joi.string().trim().min(2).max(100),
+    city: Joi.string().trim().min(2).max(100),
     status: Joi.string().valid('open', 'closed', 'expired').insensitive(),
-    salaryMin: Joi.number().min(0),
-    salaryMax: Joi.number().min(0),
-    jobType: Joi.string().valid('full_time', 'part_time', 'remote'),
-    sortBy: Joi.string().valid('salary', 'createdAt', 'title'),
-    order: Joi.string().valid('asc', 'desc').default('asc')
+    jobType: Joi.string().valid('Full-time', 'Part-time', 'Contract', 'Freelance', 'Remote', 'Internship'),
+    sortBy: Joi.string().valid('salary', 'createdAt', 'title', 'views').default('createdAt'),
+    order: Joi.string().valid('asc', 'desc').default('desc')
 });

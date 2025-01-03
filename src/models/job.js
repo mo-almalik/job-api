@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import mongoosePaginate from "mongoose-paginate-v2";
 const jobSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -47,6 +47,11 @@ const jobSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
+    status: {
+        type: String,
+        enum: ['open', 'closed', 'expired'],
+        default: 'open'
+    },
     view:{
         type: Number,
         default: 0
@@ -54,5 +59,5 @@ const jobSchema = new mongoose.Schema({
 },{
     timestamps: true
 })
-
+jobSchema.plugin(mongoosePaginate);
 export default mongoose.model("Job", jobSchema)
